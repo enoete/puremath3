@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Differential Equations TL;DR – CAPE Pure Maths</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:wght@700&display=swap" rel="stylesheet">
+  <script>
+    window.MathJax = {
+      tex: { inlineMath: [['\\(','\\)'], ['$', '$']], displayMath: [['\\[','\\]']] },
+      svg: { fontCache: 'global' }
+    };
+  </script>
+  <script defer src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+  <style>
+    :root{
+      --bg:#f6fbf8;
+      --panel:#ffffff;
+      --ink:#183028;
+      --muted:#547064;
+      --brand:#1f6b48;
+      --brand-2:#2d8a5a;
+      --accent:#d5963b;
+      --line:#d9eadf;
+      --soft:#ebf6ef;
+      --soft-2:#fff7ea;
+      --danger:#9f3f2a;
+      --danger-bg:#fdf0ec;
+      --shadow:0 14px 34px rgba(23,49,39,.08);
+      --radius:18px;
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;
+      font-family:Inter,system-ui,sans-serif;
+      color:var(--ink);
+      background:linear-gradient(180deg,#f3faf6 0%, #f7fbf9 180px, var(--bg) 100%);
+      line-height:1.65;
+    }
+    .hero{
+      padding:48px 20px 26px;
+      background:linear-gradient(135deg,#184e36, #28754e 58%, #3c9463);
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero::after{
+      content:"";
+      position:absolute; inset:0;
+      background:radial-gradient(circle at top right, rgba(255,255,255,.18), transparent 30%),
+                 radial-gradient(circle at bottom left, rgba(255,255,255,.12), transparent 25%);
+      pointer-events:none;
+    }
+    .hero-inner{max-width:1100px;margin:0 auto;position:relative;z-index:1}
+    .badge{
+      display:inline-flex;align-items:center;gap:8px;
+      padding:8px 12px;border:1px solid rgba(255,255,255,.25);
+      border-radius:999px;background:rgba(255,255,255,.12);
+      font-weight:700;font-size:.8rem;letter-spacing:.03em;
+    }
+    h1{
+      margin:14px 0 10px;
+      font-family:Merriweather,serif;
+      font-size:clamp(2rem,4vw,3rem);
+      line-height:1.15;
+    }
+    .hero p{max-width:850px;font-size:1rem;opacity:.95;margin:0}
+    .topnav{
+      position:sticky; top:0; z-index:20;
+      backdrop-filter: blur(8px);
+      background:rgba(246,251,248,.88);
+      border-bottom:1px solid rgba(31,107,72,.12);
+    }
+    .topnav-inner{
+      max-width:1100px;margin:0 auto;padding:12px 20px;
+      display:flex;gap:10px;flex-wrap:wrap;
+    }
+    .topnav a{
+      text-decoration:none;color:var(--brand);font-weight:700;font-size:.92rem;
+      background:#fff;border:1px solid var(--line);padding:10px 14px;border-radius:999px;
+    }
+    .topnav a:hover{background:var(--soft)}
+    main{max-width:1100px;margin:0 auto;padding:28px 20px 70px}
+    .grid{display:grid;grid-template-columns:1.2fr .8fr;gap:20px}
+    @media (max-width:900px){.grid{grid-template-columns:1fr}}
+    .card{
+      background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);
+      box-shadow:var(--shadow);padding:22px;
+    }
+    .card + .card{margin-top:20px}
+    h2{font-size:1.5rem;margin:0 0 14px;color:var(--brand)}
+    h3{font-size:1.12rem;margin:0 0 10px;color:var(--brand)}
+    h4{font-size:1rem;margin:0 0 8px;color:var(--ink)}
+    .lede{font-size:1.02rem;color:var(--muted)}
+    .pill-row{display:flex;flex-wrap:wrap;gap:10px;margin-top:14px}
+    .pill{background:var(--soft);color:var(--brand);padding:8px 12px;border-radius:999px;font-weight:700;font-size:.85rem}
+    .formula{
+      background:#f8fcfa;border:1px solid var(--line);border-left:5px solid var(--brand-2);
+      border-radius:14px;padding:14px 16px;margin:12px 0;overflow:auto;
+    }
+    .mini{
+      color:var(--muted);font-size:.92rem;
+    }
+    .checklist,.steps,.tight{margin:12px 0 0 0;padding-left:1.2rem}
+    .checklist li,.tight li{margin:8px 0}
+    .steps{list-style:none;padding:0;counter-reset:step}
+    .steps li{
+      counter-increment:step;
+      display:flex;gap:12px;align-items:flex-start;
+      padding:12px 14px;border-radius:14px;background:var(--soft);margin:10px 0;
+    }
+    .steps li::before{
+      content:counter(step);
+      width:30px;height:30px;flex:0 0 30px;border-radius:50%;
+      display:grid;place-items:center;background:var(--brand);color:#fff;font-weight:800;
+      margin-top:2px;
+    }
+    .warn,.gold{
+      border-radius:14px;padding:14px 16px;margin-top:14px;
+      border:1px solid;
+    }
+    .warn{background:var(--danger-bg);border-color:#f4cfc5;color:#703124}
+    .gold{background:var(--soft-2);border-color:#f2ddba}
+    .table-wrap{overflow:auto}
+    table{width:100%;border-collapse:collapse;font-size:.95rem}
+    th,td{padding:12px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+    th{background:#f1f8f4;color:var(--brand);text-align:left}
+    tr:last-child td{border-bottom:none}
+    .type-card{border:1px solid var(--line);border-radius:16px;padding:18px;background:#fff}
+    .type-card + .type-card{margin-top:14px}
+    .practice-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    @media (max-width:900px){.practice-grid{grid-template-columns:1fr}}
+    details{
+      border:1px solid var(--line);border-radius:16px;background:#fff;box-shadow:var(--shadow);overflow:hidden
+    }
+    details + details{margin-top:18px}
+    summary{
+      list-style:none;cursor:pointer;padding:16px 18px;background:linear-gradient(90deg,#1f6b48,#2d8a5a);color:#fff;
+      font-weight:800;display:flex;align-items:center;gap:12px
+    }
+    summary::-webkit-details-marker{display:none}
+    .qnum{
+      width:30px;height:30px;border-radius:50%;background:#fff;color:var(--brand);display:grid;place-items:center;font-size:.95rem
+    }
+    .qbody{padding:18px}
+    .toggle-row{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+    .toggle-btn{
+      border:none;background:var(--soft);color:var(--brand);padding:10px 14px;border-radius:999px;font-weight:800;cursor:pointer
+    }
+    .toggle-btn.answer{background:var(--soft-2);color:#9a651d}
+    .panel{display:none;padding:14px 16px;border-radius:14px;border:1px solid var(--line);margin-top:10px;background:#fbfefc}
+    .panel.active{display:block}
+    .panel.answer{background:var(--soft-2);border-color:#f0dcb4}
+    .panel h5{margin:0 0 8px;font-size:.95rem;color:var(--brand)}
+    .exam-strip{
+      display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:16px
+    }
+    @media (max-width:800px){.exam-strip{grid-template-columns:1fr}}
+    .exam-item{background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px}
+    .footer-note{margin-top:24px;color:var(--muted);font-size:.92rem}
+    .sticky-note{position:sticky;top:88px}
+    code.k{
+      background:#eef6f0;padding:2px 6px;border-radius:8px;border:1px solid #d6e6da;font-size:.92em
+    }
+  </style>
+</head>
+<body>
+  <header class="hero">
+    <div class="hero-inner">
+      <div class="badge">CAPE Pure Maths • Module 3 • Differential Equations TL;DR</div>
+      <h1>Only what you really need to know</h1>
+      <p>
+        This page cuts the chapter down to the essentials: what each question type looks like, how to decide the method fast,
+        and the exact solving steps students should practise.
+      </p>
+    </div>
+  </header>
+
+  <nav class="topnav">
+    <div class="topnav-inner">
+      <a href="#essentials">Essentials</a>
+      <a href="#question-types">Question types</a>
+      <a href="#method-checklists">Method checklists</a>
+      <a href="#practice">Practice</a>
+    </div>
+  </nav>
+
+  <main>
+    <section id="essentials" class="grid">
+      <div>
+        <div class="card">
+          <h2>What the chapter is really about</h2>
+          <p class="lede">
+            Your textbook focuses on five big skills: recognising first-order linear equations, solving them with an integrating factor,
+            solving second-order homogeneous equations, solving second-order non-homogeneous equations with <strong>CF + PI</strong>, and handling applications or substitutions when an equation can be reduced to a familiar form.
+          </p>
+          <div class="pill-row">
+            <span class="pill">First order linear</span>
+            <span class="pill">Integrating factor</span>
+            <span class="pill">Second order homogeneous</span>
+            <span class="pill">CF + PI</span>
+            <span class="pill">Substitution / modelling</span>
+          </div>
+          <div class="gold">
+            <strong>Exam mindset:</strong> most marks are not about memorising theory. They are about
+            <strong>recognising the form</strong>, choosing the correct method, and keeping the algebra organised.
+          </div>
+        </div>
+
+        <div class="card">
+          <h2>Three decisions that solve most of the chapter</h2>
+          <ol class="steps">
+            <li><div><strong>Ask what type of equation it is.</strong><br>Is it first order or second order? Is the right-hand side zero or not?</div></li>
+            <li><div><strong>Choose the method.</strong><br>First order linear \(\to\) integrating factor. Second order with RHS \(=0\) \(\to\) auxiliary equation. Second order with RHS \(\neq 0\) \(\to\) CF + PI.</div></li>
+            <li><div><strong>Use conditions last.</strong><br>Find the general solution first. Only then substitute values like \(y(1)=2\), \(I(0)=0\), or \(y'(0)=1\).</div></li>
+          </ol>
+        </div>
+      </div>
+
+      <div class="sticky-note">
+        <div class="card">
+          <h2>Ultra-short memory list</h2>
+          <ul class="checklist">
+            <li><strong>Order</strong> = highest derivative present.</li>
+            <li><strong>Degree</strong> = power of the highest derivative, after the equation is algebraic in derivatives.</li>
+            <li><strong>First order linear form:</strong> \(\dfrac{dy}{dx}+Py=Q\)</li>
+            <li><strong>Integrating factor:</strong> \(\mathrm{IF}=e^{\int P\,dx}\)</li>
+            <li><strong>Second order homogeneous:</strong> \(a\dfrac{d^2y}{dx^2}+b\dfrac{dy}{dx}+cy=0\)</li>
+            <li><strong>General solution for non-homogeneous:</strong> \(y=\text{CF}+\text{PI}\)</li>
+          </ul>
+        </div>
+
+        <div class="card">
+          <h2>Biggest mistakes to avoid</h2>
+          <ul class="checklist">
+            <li>Forgetting to make the coefficient of \(\dfrac{dy}{dx}\) equal to 1 before using integrating factor.</li>
+            <li>Using conditions before finding the general solution.</li>
+            <li>Mixing up the three root cases for the auxiliary equation.</li>
+            <li>Choosing the wrong guessed form for the PI.</li>
+            <li>Dropping constants or signs when dividing by the integrating factor.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section id="question-types" class="card" style="margin-top:20px;">
+      <h2>Types of questions you can expect</h2>
+      <div class="gold"><strong>Exam strategy:</strong> rewrite into a standard form, identify the method, solve cleanly, then use the condition at the end. For first-order linear questions, the core memory line is \(\mu=e^{\int P\,dx}\), then \(\dfrac{d}{dx}(\mu y)=\mu Q\).</div>
+      <div class="exam-strip">
+        <div class="exam-item">
+          <h3>1) First order linear</h3>
+          <p>Usually looks like \(\dfrac{dy}{dx}+Py=Q\) after rearranging.</p>
+          <div class="formula">\[(x+2)\frac{dy}{dx}+y=(x+2)^3 \quad \Rightarrow \quad \frac{dy}{dx}+\frac{1}{x+2}y=(x+2)^2\]</div>
+        </div>
+        <div class="exam-item">
+          <h3>2) Second order homogeneous</h3>
+          <p>Right-hand side is zero, so solve the auxiliary quadratic.</p>
+          <div class="formula">\[a\frac{d^2y}{dx^2}+b\frac{dy}{dx}+cy=0\]</div>
+        </div>
+        <div class="exam-item">
+          <h3>3) Second order non-homogeneous</h3>
+          <p>Right-hand side is not zero, so find CF first, then PI.</p>
+          <div class="formula">\[a\frac{d^2y}{dx^2}+b\frac{dy}{dx}+cy=f(x),\qquad y=\text{CF}+\text{PI}\]</div>
+        </div>
+      </div>
+
+      <div class="exam-strip" style="margin-top:14px;">
+        <div class="exam-item">
+          <h3>4) Substitution questions</h3>
+          <p>Exam may tell you to use a substitution like \(y=vx\) or \(x=e^u\) to turn the equation into a familiar type.</p>
+        </div>
+        <div class="exam-item">
+          <h3>5) Application / modelling</h3>
+          <p>Electric circuits and population growth questions test whether you can build or solve the DE and use the given conditions.</p>
+        </div>
+        <div class="exam-item">
+          <h3>6) Solve and then find constants</h3>
+          <p>Very common: “Find the general solution. Hence, find the solution given ...”</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="method-spotter" class="card" style="margin-top:20px;">
+      <h2>Spot the method fast</h2>
+      <ul class="checklist">
+        <li>If it can be written as \(\dfrac{dy}{dx}+P(x)y=Q(x)\), use the <strong>integrating factor</strong>.</li>
+        <li>If it has \(y''\), \(y'\), and \(y\) with right-hand side 0, use the <strong>auxiliary equation</strong>.</li>
+        <li>If it has \(y''\), \(y'\), and \(y\) with a non-zero right-hand side, find <strong>CF first, then PI</strong>.</li>
+        <li>If you see a substitution such as \(y=vx\) or \(x=e^u\), the aim is to turn it into one of the standard methods above.</li>
+        <li>If the wording talks about a circuit, current, limiting value, or population, expect a <strong>modelling</strong> question.</li>
+      </ul>
+    </section>
+
+    <section id="method-checklists" style="margin-top:20px;">
+      <div class="type-card">
+        <h2>Method 1 — First order linear using integrating factor</h2>
+        <div class="formula">\[\frac{dy}{dx}+Py=Q\qquad \text{with} \qquad \mathrm{IF}=e^{\int P\,dx}\]</div>
+        <ol class="steps">
+          <li><div>Rewrite the equation so the coefficient of \(\dfrac{dy}{dx}\) is 1.</div></li>
+          <li><div>Identify \(P\) and \(Q\).</div></li>
+          <li><div>Find the integrating factor: \(\mathrm{IF}=e^{\int P\,dx}\).</div></li>
+          <li><div>Multiply the whole equation by the IF, so the left side becomes \(\dfrac{d}{dx}(y\cdot \mathrm{IF})\).</div></li>
+          <li><div>Integrate both sides.</div></li>
+          <li><div>Make \(y\) the subject, then use any condition if given.</div></li>
+        </ol>
+        <div class="gold"><strong>Pattern to remember:</strong> \(y\cdot \mathrm{IF}=\int Q(\mathrm{IF})\,dx + c\)</div>
+      </div>
+
+      <div class="type-card">
+        <h2>Method 2 — Second order homogeneous</h2>
+        <div class="formula">\[a\frac{d^2y}{dx^2}+b\frac{dy}{dx}+cy=0\]</div>
+        <ol class="steps">
+          <li><div>Write the auxiliary equation: \(am^2+bm+c=0\).</div></li>
+          <li><div>Solve for the roots.</div></li>
+          <li><div>Choose the correct solution form from the table below.</div></li>
+          <li><div>Only after that, use any conditions like \(y(0)=2\), \(y'(0)=1\).</div></li>
+        </ol>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>Roots of \(am^2+bm+c=0\)</th><th>General solution</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Real and distinct: \(m_1, m_2\)</td><td>\(y=Ae^{m_1x}+Be^{m_2x}\)</td></tr>
+              <tr><td>Real and equal: \(m,m\)</td><td>\(y=(A+Bx)e^{mx}\)</td></tr>
+              <tr><td>Complex: \(\alpha \pm \beta i\)</td><td>\(y=e^{\alpha x}(A\cos \beta x + B\sin \beta x)\)</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="type-card">
+        <h2>Method 3 — Second order non-homogeneous</h2>
+        <div class="formula">\[a\frac{d^2y}{dx^2}+b\frac{dy}{dx}+cy=f(x),\qquad y=\text{CF}+\text{PI}\]</div>
+        <ol class="steps">
+          <li><div>Ignore \(f(x)\) first and solve the homogeneous equation to get the CF.</div></li>
+          <li><div>Guess a suitable PI based on the form of \(f(x)\).</div></li>
+          <li><div>Differentiate the PI, substitute, and compare coefficients to find unknown constants.</div></li>
+          <li><div>Write the full answer as <strong>CF + PI</strong>.</div></li>
+        </ol>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr><th>If \(f(x)\) looks like...</th><th>Try PI of the form...</th></tr>
+            </thead>
+            <tbody>
+              <tr><td>Constant \(k\)</td><td>\(y_p=A\)</td></tr>
+              <tr><td>Linear \(mx+n\)</td><td>\(y_p=Ax+B\)</td></tr>
+              <tr><td>Quadratic \(ax^2+bx+c\)</td><td>\(y_p=Ax^2+Bx+C\)</td></tr>
+              <tr><td>Trig \(p\cos kx + q\sin kx\)</td><td>\(y_p=A\cos kx + B\sin kx\)</td></tr>
+              <tr><td>Exponential \(Ce^{kx}\)</td><td>\(y_p=Ae^{kx}\)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="warn"><strong>Watch out:</strong> if your guessed PI duplicates part of the CF, multiply the guess by \(x\) until it no longer clashes.</div>
+      </div>
+
+      <div class="type-card">
+        <h2>Method 4 — Substitution / reducible form</h2>
+        <p>Some equations are not in the standard forms immediately, but the substitution makes them manageable.</p>
+        <ul class="checklist">
+          <li>For homogeneous first-order expressions involving \(x\) and \(y\), the exam may use <span class="pill">\(y=vx\)</span>, so \(\dfrac{dy}{dx}=v+x\dfrac{dv}{dx}\).</li>
+          <li>For Euler-Cauchy style equations, the exam may use <span class="pill">\(x=e^u\)</span> so that derivatives transform into a constant-coefficient second-order equation in \(u\).</li>
+        </ul>
+        <div class="gold"><strong>Shortcut idea:</strong> the substitution is there to turn the question into one of the earlier methods, not to create a brand-new method.</div>
+      </div>
+
+      <div class="type-card">
+        <h2>Method 5 — Modelling questions</h2>
+        <ul class="checklist">
+          <li><strong>Electric circuits:</strong> usually become a first-order linear DE like \(L\dfrac{dI}{dt}+RI=E(t)\).</li>
+          <li><strong>Population growth:</strong> logistic model often appears as \(\dfrac{dP}{dt}=kP\left(1-\dfrac{P}{K}\right)\), which is solved by separation and partial fractions.</li>
+        </ul>
+        <div class="warn"><strong>Key habit:</strong> read the wording carefully. They may ask for the current <em>and</em> the limiting current, or for the time taken to reach a population size.</div>
+      </div>
+    </section>
+
+    <section id="practice" class="card" style="margin-top:20px;">
+      <h2>Practice questions</h2>
+      <p class="lede">Try each one first. Then open the hint, steps, and answer.</p>
+
+      <details open>
+        <summary><span class="qnum">1</span> First order linear — integrating factor</summary>
+        <div class="qbody">
+          <p>Solve \(\dfrac{dy}{dx}+2y=x^2\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q1h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q1s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q1a')">Answer</button>
+          </div>
+          <div class="panel" id="q1h"><h5>Hint</h5>It is already in the form \(\dfrac{dy}{dx}+Py=Q\). Here \(P=2\), so the integrating factor is \(e^{\int 2\,dx}=e^{2x}\).</div>
+          <div class="panel" id="q1s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>\(\mathrm{IF}=e^{2x}\)</li>
+              <li>Multiply through: \(e^{2x}\dfrac{dy}{dx}+2e^{2x}y=x^2e^{2x}\)</li>
+              <li>So \(\dfrac{d}{dx}(ye^{2x})=x^2e^{2x}\)</li>
+              <li>Integrate: \(ye^{2x}=\int x^2e^{2x}\,dx + c\)</li>
+              <li>Using integration by parts twice, \(\int x^2e^{2x}\,dx=e^{2x}\left(\dfrac{x^2}{2}-\dfrac{x}{2}+\dfrac14\right)\)</li>
+              <li>Therefore \(y=\dfrac{x^2}{2}-\dfrac{x}{2}+\dfrac14+ce^{-2x}\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q1a"><h5>Answer</h5>\[y=\frac{x^2}{2}-\frac{x}{2}+\frac14+ce^{-2x}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">2</span> First order linear with condition</summary>
+        <div class="qbody">
+          <p>Solve \(x\dfrac{dy}{dx}+y=x^3\), given that \(y=2\) when \(x=1\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q2h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q2s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q2a')">Answer</button>
+          </div>
+          <div class="panel" id="q2h"><h5>Hint</h5>First divide by \(x\), then use integrating factor. Use the condition only after the general solution.</div>
+          <div class="panel" id="q2s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Rewrite as \(\dfrac{dy}{dx}+\dfrac1x y=x^2\)</li>
+              <li>\(\mathrm{IF}=e^{\int \frac1x\,dx}=e^{\ln x}=x\)</li>
+              <li>Multiply through: \(\dfrac{d}{dx}(xy)=x^3\)</li>
+              <li>Integrate: \(xy=\dfrac{x^4}{4}+c\)</li>
+              <li>So \(y=\dfrac14x^3+\dfrac{c}{x}\)</li>
+              <li>Use \(y(1)=2\): \(2=\dfrac14+c\Rightarrow c=\dfrac74\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q2a"><h5>Answer</h5>\[y=\frac14x^3+\frac{7}{4x}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">3</span> Second order homogeneous — distinct roots</summary>
+        <div class="qbody">
+          <p>Solve \(\dfrac{d^2y}{dx^2}-5\dfrac{dy}{dx}+6y=0\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q3h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q3s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q3a')">Answer</button>
+          </div>
+          <div class="panel" id="q3h"><h5>Hint</h5>Write the auxiliary equation and factorise it.</div>
+          <div class="panel" id="q3s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Auxiliary equation: \(m^2-5m+6=0\)</li>
+              <li>Factorise: \((m-2)(m-3)=0\)</li>
+              <li>Roots are \(m=2,3\), real and distinct</li>
+              <li>So the general solution is \(y=Ae^{2x}+Be^{3x}\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q3a"><h5>Answer</h5>\[y=Ae^{2x}+Be^{3x}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">4</span> Second order homogeneous — repeated root</summary>
+        <div class="qbody">
+          <p>Solve \(\dfrac{d^2y}{dx^2}-4\dfrac{dy}{dx}+4y=0\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q4h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q4s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q4a')">Answer</button>
+          </div>
+          <div class="panel" id="q4h"><h5>Hint</h5>If the auxiliary quadratic has one repeated root \(m\), use \((A+Bx)e^{mx}\).</div>
+          <div class="panel" id="q4s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Auxiliary equation: \(m^2-4m+4=0\)</li>
+              <li>\((m-2)^2=0\), so the repeated root is \(m=2\)</li>
+              <li>Therefore \(y=(A+Bx)e^{2x}\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q4a"><h5>Answer</h5>\[y=(A+Bx)e^{2x}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">5</span> Second order homogeneous — complex roots</summary>
+        <div class="qbody">
+          <p>Solve \(\dfrac{d^2y}{dx^2}+2\dfrac{dy}{dx}+5y=0\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q5h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q5s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q5a')">Answer</button>
+          </div>
+          <div class="panel" id="q5h"><h5>Hint</h5>For roots \(\alpha\pm\beta i\), use \(e^{\alpha x}(A\cos\beta x+B\sin\beta x)\).</div>
+          <div class="panel" id="q5s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Auxiliary equation: \(m^2+2m+5=0\)</li>
+              <li>\(m=\dfrac{-2\pm\sqrt{4-20}}{2}=-1\pm 2i\)</li>
+              <li>So \(\alpha=-1\) and \(\beta=2\)</li>
+              <li>Hence \(y=e^{-x}(A\cos 2x+B\sin 2x)\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q5a"><h5>Answer</h5>\[y=e^{-x}(A\cos 2x+B\sin 2x)\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">6</span> Second order non-homogeneous — polynomial PI</summary>
+        <div class="qbody">
+          <p>Solve \(y''-3y'+2y=4x+1\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q6h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q6s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q6a')">Answer</button>
+          </div>
+          <div class="panel" id="q6h"><h5>Hint</h5>Find the CF from the homogeneous equation. For the PI, try \(y_p=Ax+B\).</div>
+          <div class="panel" id="q6s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Homogeneous part: \(m^2-3m+2=0\Rightarrow (m-1)(m-2)=0\)</li>
+              <li>So \(\text{CF}=C_1e^x+C_2e^{2x}\)</li>
+              <li>Try \(y_p=Ax+B\), then \(y_p'=A\), \(y_p''=0\)</li>
+              <li>Substitute: \(0-3A+2(Ax+B)=4x+1\)</li>
+              <li>Compare coefficients: \(2A=4\Rightarrow A=2\)</li>
+              <li>Constant terms: \(-3A+2B=1\Rightarrow -6+2B=1\Rightarrow B=\tfrac72\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q6a"><h5>Answer</h5>\[y=C_1e^x+C_2e^{2x}+2x+\frac72\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">7</span> Second order non-homogeneous — exponential PI</summary>
+        <div class="qbody">
+          <p>Solve \(y''-y'-2y=3e^{x}\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q7h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q7s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q7a')">Answer</button>
+          </div>
+          <div class="panel" id="q7h"><h5>Hint</h5>The RHS is exponential, so try \(y_p=Ae^x\). Check first that \(e^x\) is not already part of the CF.</div>
+          <div class="panel" id="q7s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Homogeneous part: \(m^2-m-2=0\Rightarrow (m-2)(m+1)=0\)</li>
+              <li>\(\text{CF}=C_1e^{2x}+C_2e^{-x}\)</li>
+              <li>Try \(y_p=Ae^x\), so \(y_p'=Ae^x\), \(y_p''=Ae^x\)</li>
+              <li>Substitute: \(Ae^x-Ae^x-2Ae^x=3e^x\)</li>
+              <li>So \(-2A=3\Rightarrow A=-\tfrac32\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q7a"><h5>Answer</h5>\[y=C_1e^{2x}+C_2e^{-x}-\frac32e^x\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">8</span> Modelling — circuit current</summary>
+        <div class="qbody">
+          <p>Given \(2\dfrac{dI}{dt}+6I=30\) and \(I(0)=0\), find \(I\) in terms of \(t\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('q8h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('q8s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('q8a')">Answer</button>
+          </div>
+          <div class="panel" id="q8h"><h5>Hint</h5>First divide by 2. This becomes a first-order linear equation in \(I\).</div>
+          <div class="panel" id="q8s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Rewrite: \(\dfrac{dI}{dt}+3I=15\)</li>
+              <li>Integrating factor: \(e^{\int 3dt}=e^{3t}\)</li>
+              <li>Then \(\dfrac{d}{dt}(Ie^{3t})=15e^{3t}\)</li>
+              <li>Integrate: \(Ie^{3t}=5e^{3t}+c\)</li>
+              <li>So \(I=5+ce^{-3t}\)</li>
+              <li>Use \(I(0)=0\): \(0=5+c\Rightarrow c=-5\)</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="q8a"><h5>Answer</h5>\[I=5-5e^{-3t}\]</div>
+        </div>
+      </details>
+
+
+      <h2 style="margin-top:28px;">Past paper style questions</h2>
+      <p class="lede">These are adapted from the past-paper style questions on your Pure Math Unit 2 Module 3 revision page.</p>
+
+      <details>
+        <summary><span class="qnum">P1</span> Past paper style — product rule shortcut</summary>
+        <div class="qbody">
+          <p>Solve the initial value problem \(x^2\dfrac{dy}{dx}+2xy=\cos x\), given that \(y(\pi)=0\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('p1h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('p1s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('p1a')">Answer</button>
+          </div>
+          <div class="panel" id="p1h"><h5>Hint</h5>Recognise the left side as \(\dfrac{d}{dx}(x^2y)\).</div>
+          <div class="panel" id="p1s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Use the product rule in reverse: \(x^2\dfrac{dy}{dx}+2xy=\dfrac{d}{dx}(x^2y)\).</li>
+              <li>So \(\dfrac{d}{dx}(x^2y)=\cos x\).</li>
+              <li>Integrate: \(x^2y=\sin x + C\).</li>
+              <li>Apply \(y(\pi)=0\): \(0=\sin\pi + C\Rightarrow C=0\).</li>
+              <li>Hence \(y=\dfrac{\sin x}{x^2}\).</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="p1a"><h5>Answer</h5>\[y=rac{\sin x}{x^2}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">P2</span> Past paper style — trig first-order equation</summary>
+        <div class="qbody">
+          <p>A differential equation is given as \(\dfrac{dy}{dx}	an x+y-2\cos^2x=0\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('p2h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('p2s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('p2a')">Answer</button>
+          </div>
+          <div class="panel" id="p2h"><h5>Hint</h5>Divide through by \(	an x\) and use trig identities. This becomes linear in \(y\).</div>
+          <div class="panel" id="p2s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Rewrite as \(\dfrac{dy}{dx}+y\cot x=2\cos^2x\cot x\).</li>
+              <li>The integrating factor is \(e^{\int \cot x\,dx}=e^{\ln(\sin x)}=\sin x\).</li>
+              <li>Multiply through: \(\dfrac{d}{dx}(y\sin x)=2\cos^3x\).</li>
+              <li>Integrate: \(y\sin x=2\int \cos^3x\,dx\).</li>
+              <li>Use \(\cos^3x=\cos x(1-\sin^2x)\) to integrate.</li>
+              <li>Simplify to get the general solution below.</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="p2a"><h5>Answer</h5>\[y=rac{5}{3}+rac{1}{3}\cos 2x + C\csc x\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">P3</span> Past paper style — show that, then use the condition</summary>
+        <div class="qbody">
+          <p>A differential equation is given as \(x\dfrac{dy}{dx}+y=2\sin x\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('p3h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('p3s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('p3a')">Answer</button>
+          </div>
+          <div class="panel" id="p3h"><h5>Hint</h5>The left side is \(\dfrac{d}{dx}(xy)\).</div>
+          <div class="panel" id="p3s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Recognise \(x\dfrac{dy}{dx}+y=\dfrac{d}{dx}(xy)\).</li>
+              <li>So \(\dfrac{d}{dx}(xy)=2\sin x\).</li>
+              <li>Integrate: \(xy=-2\cos x + C\).</li>
+              <li>Divide by \(x\): \(y=\dfrac{C}{x}-\dfrac{2\cos x}{x}\).</li>
+              <li>If \(y=2\) when \(x=\pi\), then \(2=\dfrac{C}{\pi}+\dfrac{2}{\pi}\).</li>
+              <li>So \(C=2\pi-2\), giving the particular solution below.</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="p3a"><h5>Answer</h5>\[y=rac{C}{x}-rac{2\cos x}{x}\quad	ext{and if }y(\pi)=2,\; y=rac{2\pi-2}{x}-rac{2\cos x}{x}\]</div>
+        </div>
+      </details>
+
+      <details>
+        <summary><span class="qnum">P4</span> Past paper style — exponential forcing with modification</summary>
+        <div class="qbody">
+          <p>Solve \(y''-y'-2y=3e^{2x}\), given that \(y(0)=0\) and \(y'(0)=7\).</p>
+          <div class="toggle-row">
+            <button class="toggle-btn" onclick="togglePanel('p4h')">Hint</button>
+            <button class="toggle-btn" onclick="togglePanel('p4s')">Steps</button>
+            <button class="toggle-btn answer" onclick="togglePanel('p4a')">Answer</button>
+          </div>
+          <div class="panel" id="p4h"><h5>Hint</h5>Because \(e^{2x}\) already appears in the CF, the PI must be multiplied by \(x\).</div>
+          <div class="panel" id="p4s"><h5>Steps</h5>
+            <ol class="tight">
+              <li>Auxiliary equation: \(m^2-m-2=0\Rightarrow (m-2)(m+1)=0\).</li>
+              <li>So \(y_c=Ae^{2x}+Be^{-x}\).</li>
+              <li>Since the RHS is \(3e^{2x}\) and \(e^{2x}\) is already in the CF, try \(y_p=\lambda xe^{2x}\).</li>
+              <li>Substitute and solve to get \(\lambda=1\), so \(y_p=xe^{2x}\).</li>
+              <li>Hence \(y=Ae^{2x}+Be^{-x}+xe^{2x}\).</li>
+              <li>Use \(y(0)=0\) and \(y'(0)=7\) to get \(A=2\) and \(B=-2\).</li>
+            </ol>
+          </div>
+          <div class="panel answer" id="p4a"><h5>Answer</h5>\[y=2e^{2x}-2e^{-x}+xe^{2x}\]</div>
+        </div>
+      </details>
+
+      <p class="footer-note">
+        Best revision strategy: do at least one standard question and one past-paper style question from each method. That way students practise both the algebra and the skill of recognising the method quickly.
+      </p>
+    </section>
+  </main>
+
+  <script>
+    function togglePanel(id){
+      const el = document.getElementById(id);
+      el.classList.toggle('active');
+      if (window.MathJax && window.MathJax.typesetPromise) {
+        MathJax.typesetPromise([el]).catch(() => {});
+      }
+    }
+  </script>
+</body>
+</html>
